@@ -4,142 +4,157 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UniPilot - Student Productivity Hub</title>
-  <!-- Google Fonts & Font Awesome Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
+  <style>
+    :root {
+      --primary-color: #6366f1;
+      --primary-hover: #4f46e5;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --sidebar-width: 250px;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    [data-theme="dark"] {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border-color: #334155;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.2s, color 0.2s; }
+    body { background-color: var(--bg-color); color: var(--text-primary); display: flex; min-height: 100vh; }
+    .sidebar { width: var(--sidebar-width); background-color: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; transition: transform 0.3s ease; }
+    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; color: var(--primary-color); }
+    .nav-links { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: none; background: none; color: var(--text-secondary); font-size: 0.95rem; font-weight: 600; border-radius: var(--radius); cursor: pointer; text-align: left; }
+    .nav-item:hover, .nav-item.active { background-color: rgba(99, 102, 241, 0.1); color: var(--primary-color); }
+    .sidebar-footer { display: flex; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border-color); }
+    .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 30px; max-width: 1200px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+    .menu-toggle { display: none; background: none; border: none; font-size: 1.4rem; color: var(--text-primary); cursor: pointer; }
+    .btn { padding: 10px 18px; border-radius: var(--radius); font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background-color: var(--primary-color); color: white; }
+    .btn-secondary { background-color: var(--border-color); color: var(--text-primary); }
+    .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
+    .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius); display: flex; align-items: center; gap: 12px; }
+    .stat-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .p-due { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    .p-done { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+    .p-today { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+    .p-focus { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .dash-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .filters, .day-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+    .filter-btn, .day-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-secondary); font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .filter-btn.active, .day-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+    .assignments-grid, .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
+    .item-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius); display: flex; flex-direction: column; gap: 10px; }
+    .item-card.completed { opacity: 0.6; text-decoration: line-through; }
+    .item-badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; background: rgba(99, 102, 241, 0.1); color: var(--primary-color); font-weight: 700; width: fit-content; }
+    .pomodoro-container { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; border-radius: var(--radius); text-align: center; max-width: 450px; margin: 0 auto; }
+    .pomo-modes { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; }
+    .pomo-mode-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer; }
+    .pomo-mode-btn.active { background: var(--primary-color); color: white; }
+    .timer-display h1 { font-size: 4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 5px; }
+    .timer-controls { display: flex; justify-content: center; gap: 12px; margin-top: 25px; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
+    .modal-backdrop.active { display: flex; }
+    .modal { background: var(--card-bg); border-radius: var(--radius); width: 100%; max-width: 400px; padding: 20px; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .close-modal { background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+    .form-group input, .form-group select { padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); }
+    .preset-colors { display: flex; gap: 10px; margin-top: 10px; }
+    .color-swatch { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.active { transform: translateX(0); }
+      .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 90; display: none; }
+      .sidebar-overlay.active { display: block; }
+      .main-content { margin-left: 0; padding: 16px; }
+      .menu-toggle { display: block; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Sidebar Navigation -->
   <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <i class="fa-solid fa-graduation-cap brand-icon"></i>
+      <i class="fa-solid fa-graduation-cap" style="font-size:1.8rem;"></i>
       <h2>UniPilot</h2>
     </div>
-    
     <nav class="nav-links">
-      <button class="nav-item active" data-tab="dashboard">
-        <i class="fa-solid fa-chart-pie"></i>
-        <span>Dashboard</span>
-      </button>
-      <button class="nav-item" data-tab="assignments">
-        <i class="fa-solid fa-list-check"></i>
-        <span>Assignments</span>
-      </button>
-      <button class="nav-item" data-tab="schedule">
-        <i class="fa-solid fa-calendar-days"></i>
-        <span>Schedule</span>
-      </button>
-      <button class="nav-item" data-tab="pomodoro">
-        <i class="fa-solid fa-stopwatch"></i>
-        <span>Pomodoro</span>
-      </button>
+      <button class="nav-item active" data-tab="dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
+      <button class="nav-item" data-tab="assignments"><i class="fa-solid fa-list-check"></i><span>Assignments</span></button>
+      <button class="nav-item" data-tab="schedule"><i class="fa-solid fa-calendar-days"></i><span>Schedule</span></button>
+      <button class="nav-item" data-tab="pomodoro"><i class="fa-solid fa-stopwatch"></i><span>Pomodoro</span></button>
     </nav>
-
     <div class="sidebar-footer">
-      <button class="icon-btn" id="themeModalBtn" title="Theme Customizer">
-        <i class="fa-solid fa-palette"></i>
-      </button>
-      <button class="icon-btn" id="darkModeToggle" title="Toggle Dark/Light Mode">
-        <i class="fa-solid fa-moon"></i>
-      </button>
+      <button class="icon-btn" id="themeModalBtn"><i class="fa-solid fa-palette"></i></button>
+      <button class="icon-btn" id="darkModeToggle"><i class="fa-solid fa-moon"></i></button>
     </div>
   </aside>
 
-  <!-- Mobile Overlay -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- Main Application Body -->
   <main class="main-content">
     <header class="top-bar">
-      <button class="menu-toggle" id="menuToggle">
-        <i class="fa-solid fa-bars"></i>
-      </button>
+      <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
       <h1 id="pageTitle">Dashboard</h1>
-      <div class="user-greeting">
-        <span id="currentDate"></span>
-      </div>
+      <span id="currentDate" style="color:var(--text-secondary); font-weight:600;"></span>
     </header>
 
-    <!-- Tab 1: Dashboard -->
+    <!-- Dashboard -->
     <section class="tab-content active" id="dashboardTab">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon p-due"><i class="fa-solid fa-clock"></i></div>
-          <div class="stat-info">
-            <h3 id="statPending">0</h3>
-            <p>Pending Tasks</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon p-done"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="stat-info">
-            <h3 id="statCompleted">0</h3>
-            <p>Completed Tasks</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon p-today"><i class="fa-solid fa-book-open"></i></div>
-          <div class="stat-info">
-            <h3 id="statTodayClasses">0</h3>
-            <p>Classes Today</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon p-focus"><i class="fa-solid fa-fire"></i></div>
-          <div class="stat-info">
-            <h3 id="statFocusMinutes">0m</h3>
-            <p>Focus Time</p>
-          </div>
-        </div>
+        <div class="stat-card"><div class="stat-icon p-due"><i class="fa-solid fa-clock"></i></div><div><h3 id="statPending">0</h3><p style="font-size:0.8rem;">Pending</p></div></div>
+        <div class="stat-card"><div class="stat-icon p-done"><i class="fa-solid fa-circle-check"></i></div><div><h3 id="statCompleted">0</h3><p style="font-size:0.8rem;">Completed</p></div></div>
+        <div class="stat-card"><div class="stat-icon p-today"><i class="fa-solid fa-book-open"></i></div><div><h3 id="statTodayClasses">0</h3><p style="font-size:0.8rem;">Today's Classes</p></div></div>
+        <div class="stat-card"><div class="stat-icon p-focus"><i class="fa-solid fa-fire"></i></div><div><h3 id="statFocusMinutes">0m</h3><p style="font-size:0.8rem;">Focus Time</p></div></div>
       </div>
-
       <div class="dash-grid">
-        <div class="dash-card">
-          <h3><i class="fa-solid fa-triangle-exclamation"></i> Upcoming Deadlines</h3>
-          <div id="urgentAssignmentsList" class="dash-list"></div>
-        </div>
-        <div class="dash-card">
-          <h3><i class="fa-solid fa-calendar-day"></i> Today's Classes</h3>
-          <div id="todayScheduleList" class="dash-list"></div>
-        </div>
+        <div class="dash-card"><h3><i class="fa-solid fa-triangle-exclamation"></i> Upcoming Deadlines</h3><div id="urgentAssignmentsList"></div></div>
+        <div class="dash-card"><h3><i class="fa-solid fa-calendar-day"></i> Today's Classes</h3><div id="todayScheduleList"></div></div>
       </div>
     </section>
 
-    <!-- Tab 2: Assignments -->
+    <!-- Assignments -->
     <section class="tab-content" id="assignmentsTab">
       <div class="section-header">
-        <h2>Assignment Tracker</h2>
-        <button class="btn btn-primary" id="openAddAssignmentModal">
-          <i class="fa-solid fa-plus"></i> Add Assignment
-        </button>
+        <h2>Assignments</h2>
+        <button class="btn btn-primary" id="openAddAssignmentModal"><i class="fa-solid fa-plus"></i> Add Task</button>
       </div>
-
       <div class="filters">
         <button class="filter-btn active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="pending">Pending</button>
         <button class="filter-btn" data-filter="completed">Completed</button>
       </div>
-
       <div id="assignmentsList" class="assignments-grid"></div>
     </section>
 
-    <!-- Tab 3: Class Schedule -->
+    <!-- Schedule -->
     <section class="tab-content" id="scheduleTab">
       <div class="section-header">
-        <h2>Class Schedule</h2>
-        <button class="btn btn-primary" id="openAddClassModal">
-          <i class="fa-solid fa-plus"></i> Add Class
-        </button>
+        <h2>Schedule</h2>
+        <button class="btn btn-primary" id="openAddClassModal"><i class="fa-solid fa-plus"></i> Add Class</button>
       </div>
-
-      <div class="day-selector" id="daySelector">
+      <div class="day-selector">
         <button class="day-btn active" data-day="Monday">Mon</button>
         <button class="day-btn" data-day="Tuesday">Tue</button>
         <button class="day-btn" data-day="Wednesday">Wed</button>
@@ -148,141 +163,331 @@
         <button class="day-btn" data-day="Saturday">Sat</button>
         <button class="day-btn" data-day="Sunday">Sun</button>
       </div>
-
       <div id="scheduleList" class="schedule-grid"></div>
     </section>
 
-    <!-- Tab 4: Pomodoro Timer -->
+    <!-- Pomodoro -->
     <section class="tab-content" id="pomodoroTab">
       <div class="pomodoro-container">
         <div class="pomo-modes">
           <button class="pomo-mode-btn active" data-mode="work">Work (25m)</button>
-          <button class="pomo-mode-btn" data-mode="short">Short Break (5m)</button>
-          <button class="pomo-mode-btn" data-mode="long">Long Break (15m)</button>
+          <button class="pomo-mode-btn" data-mode="short">Break (5m)</button>
+          <button class="pomo-mode-btn" data-mode="long">Long (15m)</button>
         </div>
-
-        <div class="timer-display">
-          <h1 id="timerTime">25:00</h1>
-          <p id="timerStatus">Stay Focused!</p>
-        </div>
-
+        <div class="timer-display"><h1 id="timerTime">25:00</h1></div>
         <div class="timer-controls">
-          <button class="btn btn-lg btn-primary" id="startTimerBtn">Start</button>
-          <button class="btn btn-lg btn-secondary" id="pauseTimerBtn" disabled>Pause</button>
-          <button class="btn btn-lg btn-outline" id="resetTimerBtn">Reset</button>
+          <button class="btn btn-primary" id="startTimerBtn">Start</button>
+          <button class="btn btn-secondary" id="pauseTimerBtn" disabled>Pause</button>
+          <button class="btn btn-outline" id="resetTimerBtn">Reset</button>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Modal: Add Assignment -->
+  <!-- Modal: Assignment -->
   <div class="modal-backdrop" id="assignmentModal">
     <div class="modal">
-      <div class="modal-header">
-        <h3>Add New Assignment</h3>
-        <button class="close-modal">&times;</button>
-      </div>
+      <div class="modal-header"><h3>Add Assignment</h3><button class="close-modal">&times;</button></div>
       <form id="assignmentForm">
-        <div class="form-group">
-          <label for="assignTitle">Title</label>
-          <input type="text" id="assignTitle" required placeholder="e.g. CS101 Data Structures Lab">
-        </div>
-        <div class="form-group">
-          <label for="assignSubject">Subject / Course</label>
-          <input type="text" id="assignSubject" required placeholder="e.g. Computer Science">
-        </div>
-        <div class="form-group">
-          <label for="assignDueDate">Due Date</label>
-          <input type="date" id="assignDueDate" required>
-        </div>
-        <div class="modal-actions">
+        <div class="form-group"><label>Title</label><input type="text" id="assignTitle" required></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="assignSubject" required></div>
+        <div class="form-group"><label>Due Date</label><input type="date" id="assignDueDate" required></div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px;">
           <button type="button" class="btn btn-secondary close-modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Assignment</button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Modal: Add Class -->
+  <!-- Modal: Class -->
   <div class="modal-backdrop" id="classModal">
     <div class="modal">
-      <div class="modal-header">
-        <h3>Add New Class</h3>
-        <button class="close-modal">&times;</button>
-      </div>
+      <div class="modal-header"><h3>Add Class</h3><button class="close-modal">&times;</button></div>
       <form id="classForm">
-        <div class="form-group">
-          <label for="className">Class Name</label>
-          <input type="text" id="className" required placeholder="e.g. Algorithms & Complexity">
-        </div>
-        <div class="form-group">
-          <label for="classRoom">Room / Building</label>
-          <input type="text" id="classRoom" placeholder="e.g. Lab 304 or Zoom Link">
-        </div>
-        <div class="form-group">
-          <label for="classDay">Day of Week</label>
+        <div class="form-group"><label>Class Name</label><input type="text" id="className" required></div>
+        <div class="form-group"><label>Room</label><input type="text" id="classRoom"></div>
+        <div class="form-group"><label>Day</label>
           <select id="classDay" required>
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-            <option value="Wednesday">Wednesday</option>
-            <option value="Thursday">Thursday</option>
-            <option value="Friday">Friday</option>
-            <option value="Saturday">Saturday</option>
-            <option value="Sunday">Sunday</option>
+            <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option>
           </select>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="classStartTime">Start Time</label>
-            <input type="time" id="classStartTime" required>
-          </div>
-          <div class="form-group">
-            <label for="classEndTime">End Time</label>
-            <input type="time" id="classEndTime" required>
-          </div>
+        <div style="display:flex; gap:8px;">
+          <div class="form-group" style="flex:1;"><label>Start Time</label><input type="time" id="classStartTime" required></div>
+          <div class="form-group" style="flex:1;"><label>End Time</label><input type="time" id="classEndTime" required></div>
         </div>
-        <div class="modal-actions">
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px;">
           <button type="button" class="btn btn-secondary close-modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Class</button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Modal: Theme Customizer -->
+  <!-- Modal: Theme -->
   <div class="modal-backdrop" id="themeModal">
     <div class="modal">
-      <div class="modal-header">
-        <h3>Theme Customizer</h3>
-        <button class="close-modal">&times;</button>
+      <div class="modal-header"><h3>Custom Theme</h3><button class="close-modal">&times;</button></div>
+      <p style="font-size:0.85rem; color:var(--text-secondary);">Choose Primary Accent Color:</p>
+      <div class="preset-colors">
+        <button class="color-swatch" data-color="#6366f1" style="background:#6366f1;"></button>
+        <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6;"></button>
+        <button class="color-swatch" data-color="#10b981" style="background:#10b981;"></button>
+        <button class="color-swatch" data-color="#ec4899" style="background:#ec4899;"></button>
+        <button class="color-swatch" data-color="#f59e0b" style="background:#f59e0b;"></button>
       </div>
-      <div class="theme-options">
-        <label>Primary Accent Color</label>
-        <div class="preset-colors">
-          <button class="color-swatch" data-color="#6366f1" style="background:#6366f1;"></button>
-          <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6;"></button>
-          <button class="color-swatch" data-color="#10b981" style="background:#10b981;"></button>
-          <button class="color-swatch" data-color="#ec4899" style="background:#ec4899;"></button>
-          <button class="color-swatch" data-color="#8b5cf6" style="background:#8b5cf6;"></button>
-          <button class="color-swatch" data-color="#f59e0b" style="background:#f59e0b;"></button>
-        </div>
-        <div class="form-group" style="margin-top: 15px;">
-          <label for="customColorPicker">Custom Color</label>
-          <input type="color" id="customColorPicker" value="#6366f1">
-        </div>
-        
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border-color);">
-        
-        <label>Backup & Data</label>
-        <div class="data-actions">
-          <button class="btn btn-secondary" id="exportDataBtn"><i class="fa-solid fa-download"></i> Export Data</button>
-          <button class="btn btn-secondary" id="importDataBtn"><i class="fa-solid fa-upload"></i> Import Data</button>
-          <input type="file" id="importFileInput" accept=".json" style="display:none;">
-        </div>
+      <div class="form-group" style="margin-top:15px;">
+        <label>Custom Color Picker</label>
+        <input type="color" id="customColorPicker" value="#6366f1">
       </div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script>
+    let assignments = JSON.parse(localStorage.getItem('unipilot_assignments')) || [];
+    let classes = JSON.parse(localStorage.getItem('unipilot_classes')) || [];
+    let focusSeconds = parseInt(localStorage.getItem('unipilot_focus_seconds')) || 0;
+    let activeDay = 'Monday';
+    let activeFilter = 'all';
+
+    let timerInterval = null;
+    let timerMode = 'work';
+    let timerSeconds = 25 * 60;
+    let isTimerRunning = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      initTheme();
+      renderDashboard();
+      renderAssignments();
+      renderSchedule();
+
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+          btn.classList.add('active');
+          const tabId = btn.getAttribute('data-tab');
+          document.getElementById(tabId + 'Tab').classList.add('active');
+          document.getElementById('pageTitle').innerText = btn.querySelector('span').innerText;
+          closeSidebar();
+        });
+      });
+
+      document.getElementById('menuToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.add('active');
+        document.getElementById('sidebarOverlay').classList.add('active');
+      });
+      document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+
+      setupModal('openAddAssignmentModal', 'assignmentModal');
+      setupModal('openAddClassModal', 'classModal');
+      setupModal('themeModalBtn', 'themeModal');
+
+      document.getElementById('assignmentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        assignments.push({
+          id: Date.now(),
+          title: document.getElementById('assignTitle').value,
+          subject: document.getElementById('assignSubject').value,
+          dueDate: document.getElementById('assignDueDate').value,
+          completed: false
+        });
+        saveData();
+        renderAssignments(); renderDashboard(); closeModals(); e.target.reset();
+      });
+
+      document.getElementById('classForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        classes.push({
+          id: Date.now(),
+          name: document.getElementById('className').value,
+          room: document.getElementById('classRoom').value,
+          day: document.getElementById('classDay').value,
+          startTime: document.getElementById('classStartTime').value,
+          endTime: document.getElementById('classEndTime').value
+        });
+        saveData();
+        renderSchedule(); renderDashboard(); closeModals(); e.target.reset();
+      });
+
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          activeFilter = e.target.getAttribute('data-filter');
+          renderAssignments();
+        });
+      });
+
+      document.querySelectorAll('.day-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          activeDay = e.target.getAttribute('data-day');
+          renderSchedule();
+        });
+      });
+
+      document.getElementById('startTimerBtn').addEventListener('click', startTimer);
+      document.getElementById('pauseTimerBtn').addEventListener('click', pauseTimer);
+      document.getElementById('resetTimerBtn').addEventListener('click', resetTimer);
+
+      document.querySelectorAll('.pomo-mode-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.pomo-mode-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          timerMode = e.target.getAttribute('data-mode');
+          resetTimer();
+        });
+      });
+
+      document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
+      document.querySelectorAll('.color-swatch').forEach(s => {
+        s.addEventListener('click', (e) => setPrimaryColor(e.target.getAttribute('data-color')));
+      });
+      document.getElementById('customColorPicker').addEventListener('input', (e) => setPrimaryColor(e.target.value));
+    });
+
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('active');
+      document.getElementById('sidebarOverlay').classList.remove('active');
+    }
+
+    function setupModal(btnId, modalId) {
+      document.getElementById(btnId).addEventListener('click', () => document.getElementById(modalId).classList.add('active'));
+      document.querySelectorAll(`#${modalId} .close-modal`).forEach(b => b.addEventListener('click', closeModals));
+    }
+
+    function closeModals() {
+      document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
+    }
+
+    function renderAssignments() {
+      const list = document.getElementById('assignmentsList');
+      let items = assignments;
+      if (activeFilter === 'pending') items = items.filter(a => !a.completed);
+      if (activeFilter === 'completed') items = items.filter(a => a.completed);
+
+      if (!items.length) { list.innerHTML = `<p style="color:var(--text-secondary);">No assignments.</p>`; return; }
+
+      list.innerHTML = items.map(a => `
+        <div class="item-card ${a.completed ? 'completed' : ''}">
+          <span class="item-badge">${escapeHtml(a.subject)}</span>
+          <h4>${escapeHtml(a.title)}</h4>
+          <p style="font-size:0.85rem; color:var(--text-secondary);"><i class="fa-regular fa-calendar"></i> Due: ${a.dueDate}</p>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn btn-secondary" onclick="toggleAssignment(${a.id})">${a.completed ? 'Undo' : 'Done'}</button>
+            <button class="btn btn-outline" onclick="deleteAssignment(${a.id})"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleAssignment(id) {
+      assignments = assignments.map(a => a.id === id ? { ...a, completed: !a.completed } : a);
+      saveData(); renderAssignments(); renderDashboard();
+    }
+
+    function deleteAssignment(id) {
+      assignments = assignments.filter(a => a.id !== id);
+      saveData(); renderAssignments(); renderDashboard();
+    }
+
+    function renderSchedule() {
+      const list = document.getElementById('scheduleList');
+      const filtered = classes.filter(c => c.day === activeDay);
+      if (!filtered.length) { list.innerHTML = `<p style="color:var(--text-secondary);">No classes on ${activeDay}.</p>`; return; }
+
+      list.innerHTML = filtered.map(c => `
+        <div class="item-card">
+          <span class="item-badge">${c.startTime} - ${c.endTime}</span>
+          <h4>${escapeHtml(c.name)}</h4>
+          <p style="font-size:0.85rem; color:var(--text-secondary);"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(c.room || 'N/A')}</p>
+          <button class="btn btn-outline" style="width:fit-content;" onclick="deleteClass(${c.id})"><i class="fa-solid fa-trash"></i></button>
+        </div>
+      `).join('');
+    }
+
+    function deleteClass(id) {
+      classes = classes.filter(c => c.id !== id);
+      saveData(); renderSchedule(); renderDashboard();
+    }
+
+    function renderDashboard() {
+      document.getElementById('statPending').innerText = assignments.filter(a => !a.completed).length;
+      document.getElementById('statCompleted').innerText = assignments.filter(a => a.completed).length;
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'Long' });
+      document.getElementById('statTodayClasses').innerText = classes.filter(c => c.day === today).length;
+      document.getElementById('statFocusMinutes').innerText = Math.round(focusSeconds / 60) + 'm';
+
+      const urgent = assignments.filter(a => !a.completed).slice(0, 3);
+      document.getElementById('urgentAssignmentsList').innerHTML = urgent.length ? urgent.map(a => `<div style="padding:6px 0; border-bottom:1px solid var(--border-color);"><strong>${escapeHtml(a.title)}</strong><br><small style="color:var(--text-secondary);">${escapeHtml(a.subject)} • Due ${a.dueDate}</small></div>`).join('') : '<p style="color:var(--text-secondary); font-size:0.85rem;">No urgent tasks!</p>';
+
+      const todayClasses = classes.filter(c => c.day === today);
+      document.getElementById('todayScheduleList').innerHTML = todayClasses.length ? todayClasses.map(c => `<div style="padding:6px 0; border-bottom:1px solid var(--border-color);"><strong>${escapeHtml(c.name)}</strong><br><small style="color:var(--text-secondary);">${c.startTime} - ${c.endTime}</small></div>`).join('') : '<p style="color:var(--text-secondary); font-size:0.85rem;">No classes today.</p>';
+    }
+
+    function startTimer() {
+      if (isTimerRunning) return;
+      isTimerRunning = true;
+      document.getElementById('startTimerBtn').disabled = true;
+      document.getElementById('pauseTimerBtn').disabled = false;
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          if (timerMode === 'work') { focusSeconds++; localStorage.setItem('unipilot_focus_seconds', focusSeconds); renderDashboard(); }
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval); isTimerRunning = false; alert("Timer done!"); resetTimer();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval); isTimerRunning = false;
+      document.getElementById('startTimerBtn').disabled = false;
+      document.getElementById('pauseTimerBtn').disabled = true;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerSeconds = timerMode === 'work' ? 25*60 : (timerMode === 'short' ? 5*60 : 15*60);
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+      const s = (timerSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('timerTime').innerText = `${m}:${s}`;
+    }
+
+    function saveData() {
+      localStorage.setItem('unipilot_assignments', JSON.stringify(assignments));
+      localStorage.setItem('unipilot_classes', JSON.stringify(classes));
+    }
+
+    function initTheme() {
+      if (localStorage.getItem('unipilot_dark_mode') === 'true') document.body.setAttribute('data-theme', 'dark');
+      const color = localStorage.getItem('unipilot_primary_color');
+      if (color) setPrimaryColor(color);
+    }
+
+    function toggleDarkMode() {
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      document.body.toggleAttribute('data-theme', !isDark);
+      localStorage.setItem('unipilot_dark_mode', !isDark);
+    }
+
+    function setPrimaryColor(color) {
+      document.documentElement.style.setProperty('--primary-color', color);
+      document.documentElement.style.setProperty('--primary-hover', color);
+      localStorage.setItem('unipilot_primary_color', color);
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+  </script>
 </body>
 </html>
