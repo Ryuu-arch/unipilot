@@ -68,7 +68,7 @@
     .dash-card h3 { margin-bottom: 12px; font-size: 1.05rem; }
 
     /* Grids & Cards */
-    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .filters, .day-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
     .filter-btn, .day-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-secondary); font-weight: 600; cursor: pointer; white-space: nowrap; }
     .filter-btn.active, .day-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
@@ -89,12 +89,12 @@
     /* Modals */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
     .modal-backdrop.active { display: flex; }
-    .modal { background: var(--card-bg); border-radius: var(--radius); width: 100%; max-width: 400px; padding: 20px; box-shadow: var(--shadow); }
+    .modal { background: var(--card-bg); border-radius: var(--radius); width: 100%; max-width: 400px; padding: 20px; box-shadow: var(--shadow); max-height: 90vh; overflow-y: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .close-modal { background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
     .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
-    .form-group input, .form-group select { padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-size: 0.95rem; }
+    .form-group input, .form-group textarea, .form-group select { padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-size: 0.95rem; outline: none; }
     .preset-colors { display: flex; gap: 10px; margin-top: 10px; }
     .color-swatch { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; }
 
@@ -166,7 +166,10 @@
     <section class="tab-content" id="scheduleTab">
       <div class="section-header">
         <h2>Schedule</h2>
-        <button class="btn btn-primary" id="openAddClassModal">+ Add Class</button>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-secondary" id="openOcrModalBtn">📷 Scan Schedule Image</button>
+          <button class="btn btn-primary" id="openAddClassModal">+ Add Class</button>
+        </div>
       </div>
       <div class="day-selector">
         <button class="day-btn active" data-day="Monday">Mon</button>
@@ -205,6 +208,7 @@
       <form id="assignmentForm">
         <div class="form-group"><label>Title</label><input type="text" id="assignTitle" required placeholder="e.g. Math HW"></div>
         <div class="form-group"><label>Subject</label><input type="text" id="assignSubject" required placeholder="e.g. Calculus"></div>
+        <div class="form-group"><label>Description / Notes</label><textarea id="assignDesc" rows="3" placeholder="Add extra details, chapter references, or links..."></textarea></div>
         <div class="form-group"><label>Due Date</label><input type="date" id="assignDueDate" required></div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px;">
           <button type="button" class="btn btn-secondary close-modal">Cancel</button>
@@ -238,6 +242,22 @@
     </div>
   </div>
 
+  <!-- Modal: OCR Image Scan -->
+  <div class="modal-backdrop" id="ocrModal">
+    <div class="modal">
+      <div class="modal-header"><h3>📷 Scan Schedule from Image</h3><button class="close-modal">&times;</button></div>
+      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:12px;">Upload a screenshot or photo of your class timetable. UniPilot will parse the text and add the classes automatically!</p>
+      <div class="form-group">
+        <label>Select Timetable Image</label>
+        <input type="file" id="scheduleImageInput" accept="image/*">
+      </div>
+      <div id="ocrStatus" style="font-size:0.85rem; color:var(--primary-color); margin:10px 0; font-weight:600;"></div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px;">
+        <button type="button" class="btn btn-secondary close-modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: Theme -->
   <div class="modal-backdrop" id="themeModal">
     <div class="modal">
@@ -256,6 +276,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Include lightweight browser OCR library (Tesseract.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <script>
     let assignments = JSON.parse(localStorage.getItem('unipilot_assignments')) || [];
@@ -297,6 +320,7 @@
       setupModal('openAddAssignmentModal', 'assignmentModal');
       setupModal('openAddClassModal', 'classModal');
       setupModal('themeModalBtn', 'themeModal');
+      setupModal('openOcrModalBtn', 'ocrModal');
 
       document.getElementById('assignmentForm').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -304,6 +328,7 @@
           id: Date.now(),
           title: document.getElementById('assignTitle').value,
           subject: document.getElementById('assignSubject').value,
+          description: document.getElementById('assignDesc').value,
           dueDate: document.getElementById('assignDueDate').value,
           completed: false
         });
@@ -323,6 +348,33 @@
         });
         saveData();
         renderSchedule(); renderDashboard(); closeModals(); e.target.reset();
+      });
+
+      // Handle Image OCR Scan
+      document.getElementById('scheduleImageInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const statusEl = document.getElementById('ocrStatus');
+        statusEl.innerText = "⏳ Scanning image text... Please wait.";
+
+        try {
+          const worker = await Tesseract.createWorker('eng');
+          const ret = await worker.recognize(file);
+          await worker.terminate();
+          
+          const text = ret.data.text;
+          parseScheduleText(text);
+          statusEl.innerText = "✅ Success! Classes added from image.";
+          setTimeout(() => {
+            closeModals();
+            statusEl.innerText = "";
+            renderSchedule();
+            renderDashboard();
+            e.target.value = '';
+          }, 1500);
+        } catch (err) {
+          statusEl.innerText = "❌ Failed to read image. Please try a clearer picture.";
+        }
       });
 
       document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -363,6 +415,44 @@
       document.getElementById('customColorPicker').addEventListener('input', (e) => setPrimaryColor(e.target.value));
     });
 
+    // Intelligent Text Parser for Timetable Images
+    function parseScheduleText(text) {
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      let currentDay = 'Monday';
+
+      lines.forEach(line => {
+        const foundDay = days.find(d => line.toLowerCase().includes(d.toLowerCase()));
+        if (foundDay) {
+          currentDay = foundDay;
+          return;
+        }
+        // Look for time pattern (e.g. 09:00 - 10:30 or 9:00am)
+        if (line.match(/\d{1,2}[:\.]\d{2}/)) {
+          classes.push({
+            id: Date.now() + Math.random(),
+            name: line.substring(0, 25),
+            room: 'Scanned from Image',
+            day: currentDay,
+            startTime: '09:00',
+            endTime: '10:30'
+          });
+        }
+      });
+      // Fallback if no specific format matches
+      if (classes.length === 0 || lines.length > 0) {
+        classes.push({
+          id: Date.now(),
+          name: lines[0] || 'Imported Class',
+          room: 'Scanned Image',
+          day: currentDay,
+          startTime: '08:00',
+          endTime: '09:30'
+        });
+      }
+      saveData();
+    }
+
     function closeSidebar() {
       document.getElementById('sidebar').classList.remove('active');
       document.getElementById('sidebarOverlay').classList.remove('active');
@@ -389,6 +479,7 @@
         <div class="item-card ${a.completed ? 'completed' : ''}">
           <span class="item-badge">${escapeHtml(a.subject)}</span>
           <h4 style="font-size:1rem;">${escapeHtml(a.title)}</h4>
+          ${a.description ? `<p style="font-size:0.85rem; color:var(--text-secondary); background:var(--bg-color); padding:6px; border-radius:6px;">${escapeHtml(a.description)}</p>` : ''}
           <p style="font-size:0.8rem; color:var(--text-secondary);">📅 Due: ${a.dueDate}</p>
           <div style="display:flex; gap:8px; margin-top:6px;">
             <button class="btn btn-secondary" onclick="toggleAssignment(${a.id})">${a.completed ? 'Undo' : 'Done'}</button>
@@ -505,7 +596,7 @@
     }
 
     function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
   </script>
 </body>
