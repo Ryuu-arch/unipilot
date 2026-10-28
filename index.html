@@ -4,10 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UniPilot - Student Productivity Hub</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6366f1">
   <style>
@@ -19,7 +15,7 @@
       --text-primary: #0f172a;
       --text-secondary: #64748b;
       --border-color: #e2e8f0;
-      --sidebar-width: 250px;
+      --sidebar-width: 240px;
       --radius: 12px;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     }
@@ -31,57 +27,78 @@
       --border-color: #334155;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: background-color 0.2s, color 0.2s; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-primary); display: flex; min-height: 100vh; }
+    
+    /* Sidebar */
     .sidebar { width: var(--sidebar-width); background-color: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; transition: transform 0.3s ease; }
-    .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; color: var(--primary-color); }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; color: var(--primary-color); font-weight: 800; font-size: 1.2rem; }
     .nav-links { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: none; background: none; color: var(--text-secondary); font-size: 0.95rem; font-weight: 600; border-radius: var(--radius); cursor: pointer; text-align: left; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border: none; background: none; color: var(--text-secondary); font-size: 0.95rem; font-weight: 600; border-radius: var(--radius); cursor: pointer; text-align: left; width: 100%; }
     .nav-item:hover, .nav-item.active { background-color: rgba(99, 102, 241, 0.1); color: var(--primary-color); }
     .sidebar-footer { display: flex; gap: 10px; padding-top: 15px; border-top: 1px solid var(--border-color); }
-    .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 30px; max-width: 1200px; }
+    
+    /* Main Content */
+    .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 30px; max-width: 1000px; }
     .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .menu-toggle { display: none; background: none; border: none; font-size: 1.4rem; color: var(--text-primary); cursor: pointer; }
-    .btn { padding: 10px 18px; border-radius: var(--radius); font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+    .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; color: var(--text-primary); cursor: pointer; }
+    
+    /* Buttons */
+    .btn { padding: 10px 18px; border-radius: var(--radius); font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; }
     .btn-primary { background-color: var(--primary-color); color: white; }
     .btn-secondary { background-color: var(--border-color); color: var(--text-primary); }
     .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); }
     .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+    /* Tabs */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 25px; }
-    .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius); display: flex; align-items: center; gap: 12px; }
-    .stat-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius); display: flex; align-items: center; gap: 12px; box-shadow: var(--shadow); }
+    .stat-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
     .p-due { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
     .p-done { background: rgba(16, 185, 129, 0.1); color: #10b981; }
     .p-today { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
     .p-focus { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+
     .dash-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    .dash-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; }
+    .dash-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .dash-card h3 { margin-bottom: 12px; font-size: 1.05rem; }
+
+    /* Grids & Cards */
     .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .filters, .day-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+    .filters, .day-selector { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; }
     .filter-btn, .day-btn { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-secondary); font-weight: 600; cursor: pointer; white-space: nowrap; }
     .filter-btn.active, .day-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+    
     .assignments-grid, .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
-    .item-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius); display: flex; flex-direction: column; gap: 10px; }
-    .item-card.completed { opacity: 0.6; text-decoration: line-through; }
+    .item-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; }
+    .item-card.completed { opacity: 0.5; text-decoration: line-through; }
     .item-badge { font-size: 0.75rem; padding: 4px 8px; border-radius: 6px; background: rgba(99, 102, 241, 0.1); color: var(--primary-color); font-weight: 700; width: fit-content; }
-    .pomodoro-container { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; border-radius: var(--radius); text-align: center; max-width: 450px; margin: 0 auto; }
+
+    /* Pomodoro */
+    .pomodoro-container { background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px 20px; border-radius: var(--radius); text-align: center; max-width: 450px; margin: 0 auto; box-shadow: var(--shadow); }
     .pomo-modes { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; }
-    .pomo-mode-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer; }
+    .pomo-mode-btn { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-secondary); cursor: pointer; font-weight: 600; }
     .pomo-mode-btn.active { background: var(--primary-color); color: white; }
-    .timer-display h1 { font-size: 4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 5px; }
-    .timer-controls { display: flex; justify-content: center; gap: 12px; margin-top: 25px; }
+    .timer-display h1 { font-size: 4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 10px; }
+    .timer-controls { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+
+    /* Modals */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
     .modal-backdrop.active { display: flex; }
-    .modal { background: var(--card-bg); border-radius: var(--radius); width: 100%; max-width: 400px; padding: 20px; }
+    .modal { background: var(--card-bg); border-radius: var(--radius); width: 100%; max-width: 400px; padding: 20px; box-shadow: var(--shadow); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .close-modal { background: none; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; }
     .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
     .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
-    .form-group input, .form-group select { padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); }
+    .form-group input, .form-group select { padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-size: 0.95rem; }
     .preset-colors { display: flex; gap: 10px; margin-top: 10px; }
     .color-swatch { width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer; }
+
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
       .sidebar.active { transform: translateX(0); }
@@ -95,19 +112,16 @@
 <body>
 
   <aside class="sidebar" id="sidebar">
-    <div class="brand">
-      <i class="fa-solid fa-graduation-cap" style="font-size:1.8rem;"></i>
-      <h2>UniPilot</h2>
-    </div>
+    <div class="brand">🎓 UniPilot</div>
     <nav class="nav-links">
-      <button class="nav-item active" data-tab="dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></button>
-      <button class="nav-item" data-tab="assignments"><i class="fa-solid fa-list-check"></i><span>Assignments</span></button>
-      <button class="nav-item" data-tab="schedule"><i class="fa-solid fa-calendar-days"></i><span>Schedule</span></button>
-      <button class="nav-item" data-tab="pomodoro"><i class="fa-solid fa-stopwatch"></i><span>Pomodoro</span></button>
+      <button class="nav-item active" data-tab="dashboard">📊 Dashboard</button>
+      <button class="nav-item" data-tab="assignments">📝 Assignments</button>
+      <button class="nav-item" data-tab="schedule">📅 Schedule</button>
+      <button class="nav-item" data-tab="pomodoro">⏱️ Pomodoro</button>
     </nav>
     <div class="sidebar-footer">
-      <button class="icon-btn" id="themeModalBtn"><i class="fa-solid fa-palette"></i></button>
-      <button class="icon-btn" id="darkModeToggle"><i class="fa-solid fa-moon"></i></button>
+      <button class="icon-btn" id="themeModalBtn" title="Theme">🎨</button>
+      <button class="icon-btn" id="darkModeToggle" title="Dark Mode">🌓</button>
     </div>
   </aside>
 
@@ -115,30 +129,30 @@
 
   <main class="main-content">
     <header class="top-bar">
-      <button class="menu-toggle" id="menuToggle"><i class="fa-solid fa-bars"></i></button>
-      <h1 id="pageTitle">Dashboard</h1>
-      <span id="currentDate" style="color:var(--text-secondary); font-weight:600;"></span>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+      <h1 id="pageTitle" style="font-size: 1.4rem;">Dashboard</h1>
+      <span id="currentDate" style="color:var(--text-secondary); font-weight:600; font-size:0.9rem;"></span>
     </header>
 
-    <!-- Dashboard -->
+    <!-- Dashboard Tab -->
     <section class="tab-content active" id="dashboardTab">
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon p-due"><i class="fa-solid fa-clock"></i></div><div><h3 id="statPending">0</h3><p style="font-size:0.8rem;">Pending</p></div></div>
-        <div class="stat-card"><div class="stat-icon p-done"><i class="fa-solid fa-circle-check"></i></div><div><h3 id="statCompleted">0</h3><p style="font-size:0.8rem;">Completed</p></div></div>
-        <div class="stat-card"><div class="stat-icon p-today"><i class="fa-solid fa-book-open"></i></div><div><h3 id="statTodayClasses">0</h3><p style="font-size:0.8rem;">Today's Classes</p></div></div>
-        <div class="stat-card"><div class="stat-icon p-focus"><i class="fa-solid fa-fire"></i></div><div><h3 id="statFocusMinutes">0m</h3><p style="font-size:0.8rem;">Focus Time</p></div></div>
+        <div class="stat-card"><div class="stat-icon p-due">⏳</div><div><h3 id="statPending">0</h3><p style="font-size:0.75rem; color:var(--text-secondary);">Pending</p></div></div>
+        <div class="stat-card"><div class="stat-icon p-done">✅</div><div><h3 id="statCompleted">0</h3><p style="font-size:0.75rem; color:var(--text-secondary);">Completed</p></div></div>
+        <div class="stat-card"><div class="stat-icon p-today">📚</div><div><h3 id="statTodayClasses">0</h3><p style="font-size:0.75rem; color:var(--text-secondary);">Classes Today</p></div></div>
+        <div class="stat-card"><div class="stat-icon p-focus">🔥</div><div><h3 id="statFocusMinutes">0m</h3><p style="font-size:0.75rem; color:var(--text-secondary);">Focus Time</p></div></div>
       </div>
       <div class="dash-grid">
-        <div class="dash-card"><h3><i class="fa-solid fa-triangle-exclamation"></i> Upcoming Deadlines</h3><div id="urgentAssignmentsList"></div></div>
-        <div class="dash-card"><h3><i class="fa-solid fa-calendar-day"></i> Today's Classes</h3><div id="todayScheduleList"></div></div>
+        <div class="dash-card"><h3>⚠️ Upcoming Deadlines</h3><div id="urgentAssignmentsList"></div></div>
+        <div class="dash-card"><h3>📖 Today's Classes</h3><div id="todayScheduleList"></div></div>
       </div>
     </section>
 
-    <!-- Assignments -->
+    <!-- Assignments Tab -->
     <section class="tab-content" id="assignmentsTab">
       <div class="section-header">
         <h2>Assignments</h2>
-        <button class="btn btn-primary" id="openAddAssignmentModal"><i class="fa-solid fa-plus"></i> Add Task</button>
+        <button class="btn btn-primary" id="openAddAssignmentModal">+ Add Task</button>
       </div>
       <div class="filters">
         <button class="filter-btn active" data-filter="all">All</button>
@@ -148,11 +162,11 @@
       <div id="assignmentsList" class="assignments-grid"></div>
     </section>
 
-    <!-- Schedule -->
+    <!-- Schedule Tab -->
     <section class="tab-content" id="scheduleTab">
       <div class="section-header">
         <h2>Schedule</h2>
-        <button class="btn btn-primary" id="openAddClassModal"><i class="fa-solid fa-plus"></i> Add Class</button>
+        <button class="btn btn-primary" id="openAddClassModal">+ Add Class</button>
       </div>
       <div class="day-selector">
         <button class="day-btn active" data-day="Monday">Mon</button>
@@ -166,7 +180,7 @@
       <div id="scheduleList" class="schedule-grid"></div>
     </section>
 
-    <!-- Pomodoro -->
+    <!-- Pomodoro Tab -->
     <section class="tab-content" id="pomodoroTab">
       <div class="pomodoro-container">
         <div class="pomo-modes">
@@ -189,8 +203,8 @@
     <div class="modal">
       <div class="modal-header"><h3>Add Assignment</h3><button class="close-modal">&times;</button></div>
       <form id="assignmentForm">
-        <div class="form-group"><label>Title</label><input type="text" id="assignTitle" required></div>
-        <div class="form-group"><label>Subject</label><input type="text" id="assignSubject" required></div>
+        <div class="form-group"><label>Title</label><input type="text" id="assignTitle" required placeholder="e.g. Math HW"></div>
+        <div class="form-group"><label>Subject</label><input type="text" id="assignSubject" required placeholder="e.g. Calculus"></div>
         <div class="form-group"><label>Due Date</label><input type="date" id="assignDueDate" required></div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px;">
           <button type="button" class="btn btn-secondary close-modal">Cancel</button>
@@ -205,16 +219,16 @@
     <div class="modal">
       <div class="modal-header"><h3>Add Class</h3><button class="close-modal">&times;</button></div>
       <form id="classForm">
-        <div class="form-group"><label>Class Name</label><input type="text" id="className" required></div>
-        <div class="form-group"><label>Room</label><input type="text" id="classRoom"></div>
+        <div class="form-group"><label>Class Name</label><input type="text" id="className" required placeholder="e.g. Physics 101"></div>
+        <div class="form-group"><label>Room</label><input type="text" id="classRoom" placeholder="e.g. Room 402"></div>
         <div class="form-group"><label>Day</label>
           <select id="classDay" required>
             <option value="Monday">Monday</option><option value="Tuesday">Tuesday</option><option value="Wednesday">Wednesday</option><option value="Thursday">Thursday</option><option value="Friday">Friday</option><option value="Saturday">Saturday</option><option value="Sunday">Sunday</option>
           </select>
         </div>
         <div style="display:flex; gap:8px;">
-          <div class="form-group" style="flex:1;"><label>Start Time</label><input type="time" id="classStartTime" required></div>
-          <div class="form-group" style="flex:1;"><label>End Time</label><input type="time" id="classEndTime" required></div>
+          <div class="form-group" style="flex:1;"><label>Start</label><input type="time" id="classStartTime" required></div>
+          <div class="form-group" style="flex:1;"><label>End</label><input type="time" id="classEndTime" required></div>
         </div>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:15px;">
           <button type="button" class="btn btn-secondary close-modal">Cancel</button>
@@ -227,8 +241,8 @@
   <!-- Modal: Theme -->
   <div class="modal-backdrop" id="themeModal">
     <div class="modal">
-      <div class="modal-header"><h3>Custom Theme</h3><button class="close-modal">&times;</button></div>
-      <p style="font-size:0.85rem; color:var(--text-secondary);">Choose Primary Accent Color:</p>
+      <div class="modal-header"><h3>Theme Customizer</h3><button class="close-modal">&times;</button></div>
+      <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:8px;">Accent Color:</p>
       <div class="preset-colors">
         <button class="color-swatch" data-color="#6366f1" style="background:#6366f1;"></button>
         <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6;"></button>
@@ -237,7 +251,7 @@
         <button class="color-swatch" data-color="#f59e0b" style="background:#f59e0b;"></button>
       </div>
       <div class="form-group" style="margin-top:15px;">
-        <label>Custom Color Picker</label>
+        <label>Custom Color</label>
         <input type="color" id="customColorPicker" value="#6366f1">
       </div>
     </div>
@@ -269,7 +283,7 @@
           btn.classList.add('active');
           const tabId = btn.getAttribute('data-tab');
           document.getElementById(tabId + 'Tab').classList.add('active');
-          document.getElementById('pageTitle').innerText = btn.querySelector('span').innerText;
+          document.getElementById('pageTitle').innerText = btn.innerText.replace(/^[^\w\s]+/, '').trim();
           closeSidebar();
         });
       });
@@ -369,16 +383,16 @@
       if (activeFilter === 'pending') items = items.filter(a => !a.completed);
       if (activeFilter === 'completed') items = items.filter(a => a.completed);
 
-      if (!items.length) { list.innerHTML = `<p style="color:var(--text-secondary);">No assignments.</p>`; return; }
+      if (!items.length) { list.innerHTML = `<p style="color:var(--text-secondary); font-size:0.9rem;">No assignments found.</p>`; return; }
 
       list.innerHTML = items.map(a => `
         <div class="item-card ${a.completed ? 'completed' : ''}">
           <span class="item-badge">${escapeHtml(a.subject)}</span>
-          <h4>${escapeHtml(a.title)}</h4>
-          <p style="font-size:0.85rem; color:var(--text-secondary);"><i class="fa-regular fa-calendar"></i> Due: ${a.dueDate}</p>
-          <div style="display:flex; gap:8px; margin-top:8px;">
+          <h4 style="font-size:1rem;">${escapeHtml(a.title)}</h4>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">📅 Due: ${a.dueDate}</p>
+          <div style="display:flex; gap:8px; margin-top:6px;">
             <button class="btn btn-secondary" onclick="toggleAssignment(${a.id})">${a.completed ? 'Undo' : 'Done'}</button>
-            <button class="btn btn-outline" onclick="deleteAssignment(${a.id})"><i class="fa-solid fa-trash"></i></button>
+            <button class="btn btn-outline" onclick="deleteAssignment(${a.id})">🗑️</button>
           </div>
         </div>
       `).join('');
@@ -397,14 +411,14 @@
     function renderSchedule() {
       const list = document.getElementById('scheduleList');
       const filtered = classes.filter(c => c.day === activeDay);
-      if (!filtered.length) { list.innerHTML = `<p style="color:var(--text-secondary);">No classes on ${activeDay}.</p>`; return; }
+      if (!filtered.length) { list.innerHTML = `<p style="color:var(--text-secondary); font-size:0.9rem;">No classes on ${activeDay}.</p>`; return; }
 
       list.innerHTML = filtered.map(c => `
         <div class="item-card">
-          <span class="item-badge">${c.startTime} - ${c.endTime}</span>
-          <h4>${escapeHtml(c.name)}</h4>
-          <p style="font-size:0.85rem; color:var(--text-secondary);"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(c.room || 'N/A')}</p>
-          <button class="btn btn-outline" style="width:fit-content;" onclick="deleteClass(${c.id})"><i class="fa-solid fa-trash"></i></button>
+          <span class="item-badge">⏰ ${c.startTime} - ${c.endTime}</span>
+          <h4 style="font-size:1rem;">${escapeHtml(c.name)}</h4>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">📍 ${escapeHtml(c.room || 'No location')}</p>
+          <button class="btn btn-outline" style="width:fit-content; margin-top:4px;" onclick="deleteClass(${c.id})">🗑️ Delete</button>
         </div>
       `).join('');
     }
@@ -417,15 +431,15 @@
     function renderDashboard() {
       document.getElementById('statPending').innerText = assignments.filter(a => !a.completed).length;
       document.getElementById('statCompleted').innerText = assignments.filter(a => a.completed).length;
-      const today = new Date().toLocaleDateString('en-US', { weekday: 'Long' });
+      const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
       document.getElementById('statTodayClasses').innerText = classes.filter(c => c.day === today).length;
       document.getElementById('statFocusMinutes').innerText = Math.round(focusSeconds / 60) + 'm';
 
       const urgent = assignments.filter(a => !a.completed).slice(0, 3);
-      document.getElementById('urgentAssignmentsList').innerHTML = urgent.length ? urgent.map(a => `<div style="padding:6px 0; border-bottom:1px solid var(--border-color);"><strong>${escapeHtml(a.title)}</strong><br><small style="color:var(--text-secondary);">${escapeHtml(a.subject)} • Due ${a.dueDate}</small></div>`).join('') : '<p style="color:var(--text-secondary); font-size:0.85rem;">No urgent tasks!</p>';
+      document.getElementById('urgentAssignmentsList').innerHTML = urgent.length ? urgent.map(a => `<div style="padding:6px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;"><strong>${escapeHtml(a.title)}</strong><br><small style="color:var(--text-secondary);">${escapeHtml(a.subject)} • Due ${a.dueDate}</small></div>`).join('') : '<p style="color:var(--text-secondary); font-size:0.85rem;">No pending tasks!</p>';
 
       const todayClasses = classes.filter(c => c.day === today);
-      document.getElementById('todayScheduleList').innerHTML = todayClasses.length ? todayClasses.map(c => `<div style="padding:6px 0; border-bottom:1px solid var(--border-color);"><strong>${escapeHtml(c.name)}</strong><br><small style="color:var(--text-secondary);">${c.startTime} - ${c.endTime}</small></div>`).join('') : '<p style="color:var(--text-secondary); font-size:0.85rem;">No classes today.</p>';
+      document.getElementById('todayScheduleList').innerHTML = todayClasses.length ? todayClasses.map(c => `<div style="padding:6px 0; border-bottom:1px solid var(--border-color); font-size:0.9rem;"><strong>${escapeHtml(c.name)}</strong><br><small style="color:var(--text-secondary);">${c.startTime} - ${c.endTime}</small></div>`).join('') : '<p style="color:var(--text-secondary); font-size:0.85rem;">No classes today.</p>';
     }
 
     function startTimer() {
@@ -439,7 +453,7 @@
           if (timerMode === 'work') { focusSeconds++; localStorage.setItem('unipilot_focus_seconds', focusSeconds); renderDashboard(); }
           updateTimerDisplay();
         } else {
-          clearInterval(timerInterval); isTimerRunning = false; alert("Timer done!"); resetTimer();
+          clearInterval(timerInterval); isTimerRunning = false; alert("Timer finished!"); resetTimer();
         }
       }, 1000);
     }
@@ -475,8 +489,13 @@
 
     function toggleDarkMode() {
       const isDark = document.body.getAttribute('data-theme') === 'dark';
-      document.body.toggleAttribute('data-theme', !isDark);
-      localStorage.setItem('unipilot_dark_mode', !isDark);
+      if (isDark) {
+        document.body.removeAttribute('data-theme');
+        localStorage.setItem('unipilot_dark_mode', 'false');
+      } else {
+        document.body.setAttribute('data-theme', 'dark');
+        localStorage.setItem('unipilot_dark_mode', 'true');
+      }
     }
 
     function setPrimaryColor(color) {
